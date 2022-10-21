@@ -22,7 +22,7 @@ resource "google_compute_instance" "jenkinsvm" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "debian-11-bullseye-v20220920"
     }
   }
 
@@ -30,11 +30,9 @@ resource "google_compute_instance" "jenkinsvm" {
     network = "default"
 
     access_config {
-      // Ephemeral public IP
+      //Ephemeral public IP
     }
   }
-
-  metadata_startup_script = "echo hi > /test.txt"
 }
 
 resource "google_container_cluster" "primary" {
@@ -48,7 +46,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "my-node-pool"
   location   = var.region
   cluster    = google_container_cluster.primary.name
-  node_count = 2
+  node_count = 3
 
   node_config {
     machine_type = "e2-micro"
@@ -58,10 +56,10 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 variable "region" {
   default = ""
 }
+variable "gce_ssh_user" {
+  default = ""
+}
 
 output "jenkins_ip" {
   value = google_compute_instance.jenkinsvm.network_interface.0.access_config.0.nat_ip
-}
-resource "" "name" {
-  
 }
